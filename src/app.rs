@@ -14,7 +14,7 @@ where
     MODEL::ColorFormat: InterfacePixelFormat<DI::Word>,
     RST: OutputPin,
 {
-    display: mipidsi::Display<DI, MODEL, RST>,
+    display: &'a mut mipidsi::Display<DI, MODEL, RST>,
     backlight_controller: Option<BacklightController<'a>>,
     delay: Delay,
 }
@@ -27,7 +27,7 @@ where
     RST: OutputPin,
 {
     pub fn new(
-        display: mipidsi::Display<DI, MODEL, RST>,
+        display: &'a mut mipidsi::Display<DI, MODEL, RST>,
         backlight_controller: Option<BacklightController<'a>>,
         delay: Delay,
     ) -> Self {

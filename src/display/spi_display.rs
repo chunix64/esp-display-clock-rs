@@ -6,7 +6,7 @@ use esp_hal::{
 };
 use mipidsi::interface::SpiInterface;
 
-use crate::config::{AppPinConfig, DisplayConfig};
+use crate::config::{AppPins, DisplayConfig};
 
 pub struct SpiDisplayBuilder;
 
@@ -18,8 +18,8 @@ type SpiDisplay<'a, M> = mipidsi::Display<
 
 impl<'a> SpiDisplayBuilder {
     pub fn build<M>(
-        app_pin_config: &mut AppPinConfig,
-        display_config: DisplayConfig<M>,
+        app_pins: &mut AppPins,
+        display_config: &mut DisplayConfig<M>,
         delay: &mut Delay,
         buffer: &'a mut [u8],
     ) -> SpiDisplay<'a, M>
@@ -28,45 +28,50 @@ impl<'a> SpiDisplayBuilder {
         M::ColorFormat: mipidsi::interface::InterfacePixelFormat<u8>,
     {
         let rst = Output::new(
-            app_pin_config.rst.take().unwrap(),
+            display_config.pins.rst.take().unwrap(),
             Level::Low,
             OutputConfig::default(),
         );
 
-        let spi_device = Self::init_spi_device(app_pin_config, buffer);
+        let spi_device = Self::init_spi_device(app_pins, display_config, buffer);
 
-        mipidsi::Builder::new(display_config.display_model, spi_device)
+        mipidsi::Builder::new(display_config.display_model.take().unwrap(), spi_device)
             .display_size(display_config.display_width, display_config.display_height)
             .reset_pin(rst)
             .init(delay)
             .unwrap()
     }
 
-    fn init_spi_device(
-        app_pin_config: &mut AppPinConfig,
+    fn init_spi_device<M>(
+        app_pins: &mut AppPins,
+        display_config: &mut DisplayConfig<M>,
         buffer: &'a mut [u8],
     ) -> SpiInterface<
         'a,
         ExclusiveDevice<Spi<'a, esp_hal::Blocking>, Output<'a>, NoDelay>,
         Output<'a>,
-    > {
+    >
+    where
+        M: mipidsi::models::Model,
+        M::ColorFormat: mipidsi::interface::InterfacePixelFormat<u8>,
+    {
         let sck = Output::new(
-            app_pin_config.sck.take().unwrap(),
+            display_config.pins.sck.take().unwrap(),
             Level::Low,
             OutputConfig::default(),
         );
         let mosi = Output::new(
-            app_pin_config.mosi.take().unwrap(),
+            display_config.pins.mosi.take().unwrap(),
             Level::Low,
             OutputConfig::default(),
         );
         let cs = Output::new(
-            app_pin_config.cs.take().unwrap(),
+            display_config.pins.cs.take().unwrap(),
             Level::Low,
             OutputConfig::default(),
         );
         let dc = Output::new(
-            app_pin_config.dc.take().unwrap(),
+            display_config.pins.dc.take().unwrap(),
             Level::Low,
             OutputConfig::default(),
         );
@@ -75,7 +80,7 @@ impl<'a> SpiDisplayBuilder {
             .with_mode(esp_hal::spi::Mode::_3)
             .with_frequency(esp_hal::time::Rate::from_mhz(80));
 
-        let spi = Spi::new(app_pin_config.spi.take().unwrap(), spi_config)
+        let spi = Spi::new(app_pins.spi.take().unwrap(), spi_config)
             .unwrap()
             .with_sck(sck)
             .with_mosi(mosi);

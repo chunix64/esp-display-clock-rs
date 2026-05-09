@@ -9,7 +9,7 @@ name = "esp-display-clock-rs"
 path = "./src/main.rs"
 
 [dependencies]
-esp-hal = { version = "~1.1.0", features = ["esp32", "unstable"] }
+esp-hal = { version = "~1.1.1", features = ["esp32", "unstable"] }
 
 
 esp-bootloader-esp-idf = { version = "0.5.0", features = ["esp32"] }
@@ -20,6 +20,7 @@ log = "0.4.29"
 mipidsi = {git = "https://github.com/chunix64/mipidsi"}
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.3.0"
+embedded-graphics = "0.8.2"
 
 
 # For fine tuning these settings, please refer to https://doc.rust-lang.org/cargo/reference/profiles.html

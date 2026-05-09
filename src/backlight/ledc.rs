@@ -9,7 +9,7 @@ use esp_hal::{
     time::Rate,
 };
 
-use crate::config::AppPinConfig;
+use crate::config::{AppPins, DisplayPins};
 
 pub struct Backlight<'a> {
     backlight_pin: Option<AnyPin<'static>>,
@@ -25,8 +25,8 @@ pub struct BacklightController<'a> {
 }
 
 impl<'a> Backlight<'a> {
-    pub fn new(app_pin_config: &mut AppPinConfig) -> Self {
-        let mut ledc = Ledc::new(app_pin_config.ledc.take().unwrap());
+    pub fn new(app_pins: &mut AppPins, display_pins: &mut DisplayPins) -> Self {
+        let mut ledc = Ledc::new(app_pins.ledc.take().unwrap());
         ledc.set_global_slow_clock(esp_hal::ledc::LSGlobalClkSource::APBClk);
 
         let mut timer = ledc.timer(timer::Number::Timer0);
@@ -40,7 +40,7 @@ impl<'a> Backlight<'a> {
             .unwrap();
 
         Self {
-            backlight_pin: Some(app_pin_config.backlight.take().unwrap()),
+            backlight_pin: Some(display_pins.backlight.take().unwrap()),
             timer,
             ledc,
         }
@@ -79,5 +79,7 @@ impl<'a> BacklightController<'a> {
         self.min_brightness = min_brightness.clamp(0, 100);
     }
 
-    // TODO: increase_brightness(u8), decrease_brightness(u8), etc
+    // pub fn get_brightness(&self) -> u8 {
+    //     self.brightness
+    // }
 }
