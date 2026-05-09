@@ -32,6 +32,7 @@ use crate::display::spi_display::SpiDisplayBuilder;
 async fn main(spawner: Spawner) -> ! {
     let board = Board::init();
     board.reserve_pins();
+    board::Board::start_rtos(board.peripherals.TIMG0, board.peripherals.SW_INTERRUPT);
 
     // Config
     let app_peripherals = AppPeripherals {

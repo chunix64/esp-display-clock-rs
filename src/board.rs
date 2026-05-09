@@ -1,5 +1,10 @@
 use embassy_time::Delay;
-use esp_hal::{clock::CpuClock, peripherals::Peripherals};
+use esp_hal::{
+    clock::CpuClock,
+    interrupt::software::SoftwareInterruptControl,
+    peripherals::{Peripherals, SW_INTERRUPT},
+    timer::timg::TimerGroup,
+};
 
 pub struct Board {
     pub peripherals: Peripherals,
@@ -10,13 +15,21 @@ impl Board {
     pub fn init() -> Self {
         let config = esp_hal::Config::default().with_cpu_clock(CpuClock::max());
         let peripherals = esp_hal::init(config);
-
         esp_println::logger::init_logger_from_env();
 
         Self {
             peripherals,
             delay: Delay,
         }
+    }
+
+    pub fn start_rtos<T>(timer_group: T, sw_interrupt: SW_INTERRUPT<'static>)
+    where
+        T: esp_hal::timer::timg::TimerGroupInstance + 'static,
+    {
+        let timg0 = TimerGroup::new(timer_group);
+        let sw_interrupt = SoftwareInterruptControl::new(sw_interrupt);
+        esp_rtos::start(timg0.timer0, sw_interrupt.software_interrupt0);
     }
 
     // Lock unsafe pins
