@@ -1,22 +1,32 @@
-use embassy_time::Delay;
-use embedded_hal_async::delay::DelayNs;
 use ratatui::{Terminal, backend::Backend};
 
-pub struct UIActor<B: Backend> {
-    termimal: Terminal<B>,
+use crate::{models::clock::Clock, ui::screens::default::DefaultUI};
+
+pub struct UIActor<'a, B: Backend> {
+    terminal: Terminal<B>,
+    clock: &'a Clock,
 }
 
-impl<B> UIActor<B>
+impl<'a, B> UIActor<'a, B>
 where
     B: Backend,
 {
-    pub fn new(terminal: Terminal<B>) -> Self {
-        Self { termimal: terminal }
+    pub fn new(terminal: Terminal<B>, clock: &'a Clock) -> Self {
+        Self { terminal, clock }
     }
 
     pub async fn run(&mut self) {
-        loop {
-            Delay.delay_ms(500).await;
-        }
+        self.draw();
+    }
+
+    fn draw(&mut self) {
+        self.terminal
+            .draw(|frame| {
+                let area = frame.area();
+                let buf = frame.buffer_mut();
+
+                DefaultUI::draw(area, buf, self.clock);
+            })
+            .unwrap();
     }
 }

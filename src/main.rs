@@ -11,30 +11,31 @@ fn panic(panic_info: &core::panic::PanicInfo) -> ! {
 
 esp_bootloader_esp_idf::esp_app_desc!();
 
+extern crate alloc;
+
 // -----------
 
 mod app;
-mod backlight;
-mod board;
 mod config;
-mod display;
+mod hardware;
+mod models;
 mod ui;
 
 use embassy_executor::Spawner;
 
 use crate::app::App;
-use crate::backlight::ledc::Backlight;
-use crate::board::Board;
 use crate::config::{AppPeripherals, BacklightConfig, DisplayConfig, DisplayPins};
-use crate::display::display_controller::DisplayController;
-use crate::display::spi_display::SpiDisplayBuilder;
+use crate::hardware::backlight::ledc::Backlight;
+use crate::hardware::board::Board;
+use crate::hardware::display::display_controller::DisplayController;
+use crate::hardware::display::spi_display::SpiDisplayBuilder;
 
 #[allow(clippy::large_stack_frames)]
 #[esp_rtos::main]
 async fn main(spawner: Spawner) -> ! {
     let board = Board::init();
     board.reserve_pins();
-    board::Board::start_rtos(board.peripherals.TIMG0, board.peripherals.SW_INTERRUPT);
+    Board::start_rtos(board.peripherals.TIMG0, board.peripherals.SW_INTERRUPT);
 
     // Config
     let app_peripherals = AppPeripherals {

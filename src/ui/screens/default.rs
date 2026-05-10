@@ -1,28 +1,35 @@
-use core::marker::PhantomData;
-use embassy_time::Delay;
-use embedded_hal_async::delay::DelayNs;
-use ratatui::{Frame, Terminal, prelude::Backend};
+use alloc::format;
+use ratatui::{
+    buffer::Buffer,
+    layout::Rect,
+    style::{Style, Stylize},
+    text::Line,
+    widgets::{Block, Paragraph, Widget},
+};
 
-pub struct DefaultUI<B: Backend> {
-    _marker: PhantomData<B>,
-}
+use crate::models::clock::Clock;
 
-impl<B: Backend> DefaultUI<B> {
-    pub fn new() -> Self {
-        Self {
-            _marker: PhantomData,
-        }
+pub struct DefaultUI;
+
+impl DefaultUI {
+    pub fn draw(area: Rect, buf: &mut Buffer, clock: &Clock) {
+        let title = Line::from("ESP Clock".bold());
+        let block = Block::bordered()
+            .title(title)
+            .border_set(ratatui::symbols::border::THICK);
+
+        let clock_text = format!(
+            "{:02}:{:02}:{:02}",
+            clock.hour(),
+            clock.minute(),
+            clock.second()
+        );
+
+        let clock = Paragraph::new(clock_text)
+            .style(Style::default().bold())
+            .centered()
+            .block(block);
+
+        clock.render(area, buf);
     }
-
-    pub async fn run(&mut self, terminal: &mut Terminal<B>, delay: &mut Delay)
-    where
-        B::Error: 'static,
-    {
-        loop {
-            terminal.draw(|frame| self.draw(frame)).unwrap();
-            delay.delay_ms(33).await;
-        }
-    }
-
-    fn draw(&mut self, frame: &mut Frame) {}
 }

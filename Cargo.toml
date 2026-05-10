@@ -16,6 +16,7 @@ esp-alloc = { version = "0.10.0", features = ["esp32"] }
 esp-rtos = { version = "0.3.0", features = ["esp32", "embassy"] }
 embassy-executor = "0.10.0"
 embassy-time = "0.5.1"
+embassy-sync = "0.8.0"
 
 embedded-hal = "1.0.0"
 embedded-hal-bus = "0.3.0"
@@ -28,8 +29,8 @@ log = "0.4.29"
 mipidsi = {git = "https://github.com/chunix64/mipidsi"}
 mousefood = { version = "0.5.0", default-features = false, features = ["fonts"] }
 ratatui = { version = "0.30.0", default-features = false }
-embassy-sync = "0.8.0"
-static_cell = "2.1.1"
+chrono = { version = "0.4.44", default-features = false }
+chrono-tz = { version = "0.10.4", default-features = false }
 
 # For fine tuning these settings, please refer to https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.dev]
