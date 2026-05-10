@@ -53,7 +53,7 @@ impl Board {
         };
 
         let display_config = DisplayConfig {
-            display_model: mipidsi::models::ST7789,
+            display_model: ST7789,
             display_width: 240,
             display_height: 320,
             pins: display_pins,
