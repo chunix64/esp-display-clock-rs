@@ -19,8 +19,7 @@ type SpiDisplay<'a, M> = mipidsi::Display<
 impl<'a> SpiDisplayBuilder {
     pub fn build<M>(
         spi_peripheral: AnySpi<'a>,
-        display_config: DisplayConfig,
-        model: M,
+        display_config: DisplayConfig<M>,
         delay: &mut Delay,
         buffer: &'static mut [u8],
     ) -> SpiDisplay<'a, M>
@@ -52,7 +51,7 @@ impl<'a> SpiDisplayBuilder {
 
         let spi_device = SpiInterface::new(spi_bus, dc, buffer);
 
-        mipidsi::Builder::new(model, spi_device)
+        mipidsi::Builder::new(display_config.display_model, spi_device)
             .display_size(display_config.display_width, display_config.display_height)
             .orientation(mipidsi::options::Orientation::default().rotate(Rotation::Deg0))
             .reset_pin(rst)

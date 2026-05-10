@@ -1,4 +1,5 @@
 use esp_hal::{gpio::AnyPin, peripherals::LEDC, spi::master::AnySpi};
+use mipidsi::models::Model;
 
 pub struct AppPeripherals {
     pub ledc: LEDC<'static>,
@@ -17,7 +18,8 @@ pub struct BacklightConfig {
     pub pin: AnyPin<'static>,
 }
 
-pub struct DisplayConfig {
+pub struct DisplayConfig<M: Model> {
+    pub display_model: M,
     pub display_width: u16,
     pub display_height: u16,
     pub pins: DisplayPins,

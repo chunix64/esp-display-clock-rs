@@ -6,11 +6,10 @@ use mipidsi::{
     interface::{Interface, InterfacePixelFormat},
     models::Model,
 };
-
 use mousefood::{EmbeddedBackend, EmbeddedBackendConfig};
 use ratatui::Terminal;
 
-use crate::display::display_controller::DisplayController;
+use crate::{actors::ui::ui_task, display::display_controller::DisplayController};
 
 pub struct App<'a, DI, MODEL, RST>
 where
@@ -37,19 +36,16 @@ where
     }
 
     pub async fn run(&mut self, spawner: Spawner) -> ! {
+        // TODO: Refactor with embassy_executor later
         let _ = spawner;
-
-        loop {
-            self.ui_task().await;
-            self.delay.delay_ms(500).await;
-        }
-    }
-
-    pub async fn ui_task(&mut self) {
         self.display.init();
 
         let backend =
             EmbeddedBackend::new(self.display.raw_display(), EmbeddedBackendConfig::default());
         let mut terminal = Terminal::new(backend).unwrap();
+        loop {
+            ui_task(&mut terminal, &mut self.delay).await;
+            self.delay.delay_ms(500).await;
+        }
     }
 }
