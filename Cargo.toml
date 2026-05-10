@@ -21,6 +21,7 @@ embedded-graphics = "0.8.2"
 embassy-executor = "0.10.0"
 embassy-time = "0.5.1"
 
+static_cell = "2.1.1"
 critical-section = "1.2.0"
 
 esp-println = { version = "0.17.0", features = ["esp32", "log-04"] }

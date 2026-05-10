@@ -22,7 +22,7 @@ where
     RST: OutputPin + 'static,
 {
     display: DisplayController<'a, DI, MODEL, RST>,
-    clock: Clock,
+    clock: &'static Clock,
 }
 
 #[allow(clippy::large_stack_frames)]
@@ -34,11 +34,8 @@ where
     MODEL: Model<ColorFormat = embedded_graphics::pixelcolor::Rgb565>,
     RST: OutputPin + 'static,
 {
-    pub fn new(display: DisplayController<'a, DI, MODEL, RST>) -> Self {
-        Self {
-            display,
-            clock: Clock::default(),
-        }
+    pub fn new(display: DisplayController<'a, DI, MODEL, RST>, clock: &'static Clock) -> Self {
+        Self { display, clock }
     }
 
     pub async fn run(&mut self, spawner: Spawner) -> ! {
