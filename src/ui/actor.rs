@@ -25,7 +25,7 @@ where
                 let area = frame.area();
                 let buf = frame.buffer_mut();
 
-                DefaultUI::draw(area, buf, &self.clock);
+                DefaultUI::draw(area, buf, self.clock);
             })
             .unwrap();
     }
