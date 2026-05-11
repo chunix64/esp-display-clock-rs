@@ -6,7 +6,7 @@ use esp_hal::{
 };
 use mipidsi::{interface::SpiInterface, options::Rotation};
 
-use crate::types::DisplayConfig;
+use crate::models::configs::DisplayConfig;
 
 pub struct SpiDisplayBuilder;
 

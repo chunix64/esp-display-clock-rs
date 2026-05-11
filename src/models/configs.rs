@@ -35,5 +35,3 @@ pub struct WifiConfig {
     pub ssid: heapless::String<32>,
     pub password: heapless::String<32>,
 }
-
-// Shared structs

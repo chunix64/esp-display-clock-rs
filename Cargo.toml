@@ -18,9 +18,10 @@ esp-radio = { version = "0.18.0", default-features = false, features = ["esp32",
 embedded-hal = "1.0.0"
 embedded-hal-async = "1.0.0"
 embedded-hal-bus = "0.3.0"
+embedded-graphics = "0.8.2"
+
 embassy-executor = "0.10.0"
 embassy-time = "0.5.1"
-embedded-graphics = "0.8.2"
 
 heapless = "0.9.3"
 

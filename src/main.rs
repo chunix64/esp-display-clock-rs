@@ -18,7 +18,7 @@ extern crate alloc;
 mod app;
 mod hardware;
 mod models;
-mod types;
+mod services;
 mod ui;
 
 use embassy_executor::Spawner;
@@ -30,7 +30,7 @@ use crate::hardware::display::display_controller::DisplayController;
 use crate::hardware::display::spi_display::SpiDisplayBuilder;
 use crate::hardware::radio::wifi::wifi_task;
 use crate::models::clock::Clock;
-use crate::types::WifiConfig;
+use crate::models::configs::WifiConfig;
 
 const DISPLAY_BUFFER_SIZE: usize = 2048;
 static mut DISPLAY_BUFFER: [u8; DISPLAY_BUFFER_SIZE] = [0u8; DISPLAY_BUFFER_SIZE];

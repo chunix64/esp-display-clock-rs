@@ -5,7 +5,7 @@ use esp_hal::peripherals::WIFI;
 use esp_radio::wifi::{Config, PowerSaveMode, WifiController, sta::StationConfig};
 use log::{info, warn};
 
-use crate::types::WifiConfig;
+use crate::models::configs::WifiConfig;
 
 #[embassy_executor::task]
 pub async fn wifi_task(wifi_peripheral: WIFI<'static>, wifi_config: WifiConfig) {

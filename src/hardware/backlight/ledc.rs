@@ -10,7 +10,7 @@ use esp_hal::{
     time::Rate,
 };
 
-use crate::types::BacklightConfig;
+use crate::models::configs::BacklightConfig;
 
 pub struct Backlight<'a> {
     backlight_pin: Option<AnyPin<'static>>,

@@ -4,7 +4,7 @@ use esp_hal::{
 };
 use mipidsi::models::ST7789;
 
-use crate::types::{AppPeripherals, BacklightConfig, DisplayConfig, DisplayPins};
+use crate::models::configs::{AppPeripherals, BacklightConfig, DisplayConfig, DisplayPins};
 
 pub struct Board {
     pub app_peripherals: AppPeripherals,
