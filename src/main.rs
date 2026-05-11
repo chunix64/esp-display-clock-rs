@@ -30,6 +30,7 @@ use crate::hardware::display::display_controller::DisplayController;
 use crate::hardware::display::spi_display::SpiDisplayBuilder;
 use crate::hardware::radio::wifi::wifi_task;
 use crate::models::clock::Clock;
+use crate::types::WifiConfig;
 
 const DISPLAY_BUFFER_SIZE: usize = 2048;
 static mut DISPLAY_BUFFER: [u8; DISPLAY_BUFFER_SIZE] = [0u8; DISPLAY_BUFFER_SIZE];
@@ -37,11 +38,16 @@ static mut DISPLAY_BUFFER: [u8; DISPLAY_BUFFER_SIZE] = [0u8; DISPLAY_BUFFER_SIZE
 #[allow(clippy::large_stack_frames)]
 #[esp_rtos::main]
 async fn main(spawner: Spawner) -> ! {
-    // Pin assignments, peripheral and wifi configuration can be changed in src/hardware/board.rs
+    // Pin assignments and peripheral configuration can be changed in src/hardware/board.rs
     let board = Board::init();
     let clock = Clock::default();
 
-    spawner.spawn(wifi_task(board.app_peripherals.wifi, board.wifi_config).unwrap());
+    let wifi_config = WifiConfig {
+        ssid: heapless::String::try_from("YOUR_SSID").unwrap(),
+        password: heapless::String::try_from("YOUR_SSID_PASSWORD").unwrap(),
+    };
+
+    spawner.spawn(wifi_task(board.app_peripherals.wifi, wifi_config).unwrap());
 
     let display_buffer: &'static mut [u8; DISPLAY_BUFFER_SIZE] =
         unsafe { &mut *core::ptr::addr_of_mut!(DISPLAY_BUFFER) };

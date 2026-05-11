@@ -4,13 +4,12 @@ use esp_hal::{
 };
 use mipidsi::models::ST7789;
 
-use crate::types::{AppPeripherals, BacklightConfig, DisplayConfig, DisplayPins, WifiConfig};
+use crate::types::{AppPeripherals, BacklightConfig, DisplayConfig, DisplayPins};
 
 pub struct Board {
     pub app_peripherals: AppPeripherals,
     pub display_config: DisplayConfig<ST7789>,
     pub backlight_config: BacklightConfig,
-    pub wifi_config: WifiConfig,
 }
 
 impl Board {
@@ -68,16 +67,10 @@ impl Board {
             pins: display_pins,
         };
 
-        let wifi_config = WifiConfig {
-            ssid: heapless::String::try_from("YOUR_SSID").unwrap(),
-            password: heapless::String::try_from("YOUR_PASSWORD").unwrap(),
-        };
-
         Self {
             app_peripherals,
             display_config,
             backlight_config,
-            wifi_config,
         }
     }
 
