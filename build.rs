@@ -1,9 +1,14 @@
+#[cfg(feature = "desktop")]
+fn main() {}
+
+#[cfg(feature = "embedded")]
 fn main() {
     linker_be_nice();
     // make sure linkall.x is the last linker script (otherwise might cause problems with flip-link)
     println!("cargo:rustc-link-arg=-Tlinkall.x");
 }
 
+#[cfg(feature = "embedded")]
 fn linker_be_nice() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 {

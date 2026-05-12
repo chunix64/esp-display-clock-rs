@@ -1,43 +1,82 @@
 [package]
 edition      = "2024"
 name         = "esp-display-clock-rs"
+default-run  = "esp-display-clock-rs"
 rust-version = "1.91"
 version      = "0.1.0"
 
 [[bin]]
 name = "esp-display-clock-rs"
 path = "./src/main.rs"
+required-features = ["embedded"]
+
+[[bin]]
+name = "esp-display-clock-rs-desktop"
+path = "./src/main_desktop.rs"
+required-features = ["desktop"]
+
+[features]
+default  = ["embedded"]
+desktop  = ["ratatui/crossterm", "chrono/std", "chrono/clock", "dep:crossterm"]
+embedded = [
+    "dep:esp-hal",
+    "dep:esp-bootloader-esp-idf",
+    "dep:esp-alloc",
+    "dep:esp-rtos",
+    "dep:esp-radio",
+    "dep:embedded-hal",
+    "dep:embedded-hal-async",
+    "dep:embedded-hal-bus",
+    "dep:embedded-graphics",
+    "dep:embassy-executor",
+    "dep:embassy-time",
+    "dep:embassy-net",
+    "dep:static_cell",
+    "dep:sntpc",
+    "dep:sntpc-net-embassy",
+    "dep:mipidsi",
+    "dep:mousefood",
+    "dep:esp-println",
+]
+crossterm = ["dep:crossterm"]
+
 
 [dependencies]
-esp-hal = { version = "~1.1.1", features = ["esp32", "unstable"] }
-esp-bootloader-esp-idf = { version = "0.5.0", features = ["esp32"] }
-esp-alloc = { version = "0.10.0", features = ["esp32"] }
-esp-rtos = { version = "0.3.0", features = ["esp32", "embassy", "esp-radio"] }
-esp-radio = { version = "0.18.0", default-features = false, features = ["esp32", "wifi", "esp-alloc", "unstable"] }
-
-embedded-hal = "1.0.0"
-embedded-hal-async = "1.0.0"
-embedded-hal-bus = "0.3.0"
-
-embassy-executor = "0.10.0"
-embassy-time = "0.5.1"
-embassy-net = { version = "0.9.1", features = ["dhcpv4", "dns", "udp"] }
-
+# --- Shared (both targets) ---
 heapless = "0.9.3"
-static_cell = "2.1.1"
-
 chrono = { version = "0.4.44", default-features = false }
 chrono-tz = { version = "0.10.4", default-features = false }
-sntpc = { version = "0.9.0", default-features = false }
-sntpc-net-embassy = "0.9.0"
-
-mipidsi = "0.10.0"
-embedded-graphics = "0.8.2"
-mousefood = { version = "0.5.0", default-features = false, features = ["fonts"] }
 ratatui = { version = "0.30.0", default-features = false }
-
-esp-println = { version = "0.17.0", features = ["esp32", "log-04"] }
 log = "0.4.29"
+
+# --- Desktop only ---
+crossterm               = { version = "0.29.0", optional = true }
+
+# --- Embedded only ---
+esp-hal                 = { version = "~1.1.1", optional = true, features = ["esp32", "unstable"] }
+esp-bootloader-esp-idf  = { version = "0.5.0",  optional = true,features = ["esp32"] }
+esp-alloc               = { version = "0.10.0", optional = true,features = ["esp32"] }
+esp-rtos                = { version = "0.3.0",  optional = true,features = ["esp32", "embassy", "esp-radio"] }
+esp-radio               = { version = "0.18.0", optional = true,default-features = false, features = ["esp32", "wifi", "esp-alloc", "unstable"] }
+
+embedded-hal            = { version = "1.0.0",  optional = true,}
+embedded-hal-async      = { version = "1.0.0",  optional = true, }
+embedded-hal-bus        = { version = "0.3.0",  optional = true, }
+embedded-graphics       = { version = "0.8.2",  optional = true, }
+
+embassy-executor        = { version = "0.10.0", optional = true, }
+embassy-time            = { version = "0.5.1",  optional = true, }
+embassy-net             = { version = "0.9.1",  optional = true, features = ["dhcpv4", "dns", "udp"] }
+
+static_cell             = { version = "2.1.1",  optional = true }
+
+sntpc                   = { version = "0.9.0",  optional = true, default-features = false }
+sntpc-net-embassy       = { version = "0.9.0",  optional = true, }
+
+mipidsi                 = { version= "0.10.0",  optional = true, }
+mousefood               = { version = "0.5.0",  optional = true, default-features = false, features = ["fonts"] }
+
+esp-println             = { version = "0.17.0", optional = true, features = ["esp32", "log-04"] }
 
 # For fine tuning these settings, please refer to https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.dev]

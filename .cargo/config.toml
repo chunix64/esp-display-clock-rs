@@ -1,6 +1,9 @@
 [target.xtensa-esp32-none-elf]
 runner = "espflash flash --monitor --chip esp32 --baud 921600"
 
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "link-arg=-fuse-ld=lld"]
+
 [build]
 rustflags = [
   "-C", "link-arg=-nostartfiles",
@@ -13,3 +16,9 @@ build-std = ["core", "alloc"]
 
 [env]
 ESP_LOG = "INFO"
+
+[alias]
+run-desktop = "run --no-default-features -Z build-std= -F desktop --target x86_64-unknown-linux-gnu --bin esp-display-clock-rs-desktop"
+build-desktop = "build --no-default-features -Z build-std= -F desktop --target x86_64-unknown-linux-gnu"
+clippy-desktop = "clippy --no-default-features -Z build-std= -F desktop --target x86_64-unknown-linux-gnu"
+check-desktop = "check --no-default-features -Z build-std= -F desktop --target x86_64-unknown-linux-gnu"

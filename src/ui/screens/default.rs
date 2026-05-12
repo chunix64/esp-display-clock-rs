@@ -1,3 +1,4 @@
+#[cfg(feature = "embedded")]
 use alloc::format;
 use ratatui::{
     buffer::Buffer,

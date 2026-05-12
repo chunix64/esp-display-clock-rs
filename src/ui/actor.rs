@@ -1,3 +1,5 @@
+#![cfg(feature = "embedded")]
+
 use embassy_time::Delay;
 use embedded_hal_async::delay::DelayNs;
 use mousefood::{EmbeddedBackend, EmbeddedBackendConfig};
