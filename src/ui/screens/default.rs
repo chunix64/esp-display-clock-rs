@@ -9,10 +9,18 @@ use ratatui::{
 
 use crate::models::clock::Clock;
 
-pub struct DefaultUI;
+pub struct DefaultUI<'a> {
+    clock: &'a Clock,
+}
 
-impl DefaultUI {
-    pub fn draw(area: Rect, buf: &mut Buffer, clock: &Clock) {
+impl<'a> DefaultUI<'a> {
+    pub fn new(clock: &'a Clock) -> Self {
+        Self { clock }
+    }
+}
+
+impl Widget for DefaultUI<'_> {
+    fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Line::from("ESP Clock".bold());
         let block = Block::bordered()
             .title(title)
@@ -20,9 +28,9 @@ impl DefaultUI {
 
         let clock_text = format!(
             "{:02}:{:02}:{:02}",
-            clock.hour(),
-            clock.minute(),
-            clock.second()
+            self.clock.hour(),
+            self.clock.minute(),
+            self.clock.second()
         );
 
         let clock = Paragraph::new(clock_text)

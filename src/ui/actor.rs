@@ -17,14 +17,14 @@ pub async fn ui_task(display: &'static mut DisplayController, clock: &'static Cl
     let mut terminal = Terminal::new(backend).unwrap();
 
     loop {
-        let _ = terminal.draw(|frame| draw(frame, clock));
+        let _ = terminal.draw(|frame| render_ui(frame, clock));
         Delay.delay_ms(1000).await;
     }
 }
 
-fn draw(frame: &mut Frame, clock: &'static Clock) {
+// Add choosing layout/ui/theme logic later
+fn render_ui(frame: &mut Frame, clock: &'static Clock) {
     let area = frame.area();
-    let buf = frame.buffer_mut();
 
-    DefaultUI::draw(area, buf, clock);
+    frame.render_widget(DefaultUI::new(clock), area);
 }

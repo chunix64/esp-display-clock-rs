@@ -55,15 +55,19 @@ static BACKLIGHT: StaticCell<Backlight> = StaticCell::new();
 #[allow(clippy::large_stack_frames)]
 #[esp_rtos::main]
 async fn main(spawner: Spawner) -> ! {
-    // Initialize
+    // --- Board & RTC ---
     let board = Board::init();
     let rtc: &'static Rtc<'static> = RTC.init(Rtc::new(board.app_peripherals.lpwr));
     let clock: &'static Clock = CLOCK.init(Clock::default(rtc));
+
+    // --- WiFi & Network ---
     let (wifi_controller_inner, wifi_interfaces) =
         esp_radio::wifi::new(board.app_peripherals.wifi, Default::default()).unwrap();
     let wifi_controller: &'static mut WifiController<'static> =
         WIFI_CONTROLLER.init(wifi_controller_inner);
     let (network_stack, network_runner) = init_network_stack(wifi_interfaces.station);
+
+    // --- Display & Backlight ---
     let display_buffer: &'static mut [u8; DISPLAY_BUFFER_SIZE] =
         DISPLAY_BUFFER.init([0u8; DISPLAY_BUFFER_SIZE]);
     let backlight: &'static mut Backlight = BACKLIGHT.init(Backlight::new(
@@ -79,21 +83,20 @@ async fn main(spawner: Spawner) -> ! {
     let display_controller =
         DISPLAY_CONTROLLER.init(DisplayController::new(display, Some(backlight_controller)));
 
-    // Wifi configs
+    // --- Config ---
     let wifi_config = WifiConfig {
         ssid: heapless::String::try_from("YOUR_SSID").unwrap(),
         password: heapless::String::try_from("YOUR_SSID_PASSWORD").unwrap(),
     };
 
-    // Spawning hardware jobs and services
+    // --- Spawn Tasks ---
     spawner.spawn(wifi_task(wifi_controller, wifi_config).unwrap());
     spawner.spawn(embassy_net_task(network_runner).unwrap());
     spawner.spawn(ntp_task(network_stack, rtc).unwrap());
-
-    // Spawn app
     spawner.spawn(app_task(spawner, display_controller, clock).unwrap());
 
     loop {
+        // Yield to other tasks, doing nothing
         Delay.delay_ms(3600).await;
     }
 }
