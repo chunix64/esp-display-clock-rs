@@ -80,7 +80,9 @@ pub async fn ntp_task(network_stack: embassy_net::Stack<'static>, rtc: &'static 
     );
 
     loop {
-        let ntp_context = sntpc::NtpContext::new(NtpTimeStamp::new(rtc, 0));
+        let mut timestamp = NtpTimeStamp::new(rtc, 0);
+        timestamp.init();
+        let ntp_context = sntpc::NtpContext::new(timestamp);
         let result = get_time(ntp_address, &socket, ntp_context).await;
 
         match result {

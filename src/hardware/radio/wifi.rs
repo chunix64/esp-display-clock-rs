@@ -1,10 +1,15 @@
 use alloc::string::ToString;
+use embassy_net::StackResources;
 use embassy_time::Delay;
 use embedded_hal_async::delay::DelayNs;
+use esp_hal::rng::Rng;
 use esp_radio::wifi::{Config, PowerSaveMode, WifiController, sta::StationConfig};
 use log::{info, warn};
+use static_cell::StaticCell;
 
 use crate::models::configs::WifiConfig;
+
+static NET_STACK_RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
 
 #[embassy_executor::task]
 pub async fn wifi_task(
@@ -54,4 +59,25 @@ async fn wifi_handle_connection(
             }
         }
     }
+}
+
+pub fn init_network_stack<'a>(
+    station: esp_radio::wifi::Interface<'a>,
+    rng: &Rng,
+) -> (
+    embassy_net::Stack<'a>,
+    embassy_net::Runner<'a, esp_radio::wifi::Interface<'a>>,
+) {
+    let stack_resources = NET_STACK_RESOURCES
+        .uninit()
+        .write(StackResources::<3>::new());
+
+    let embassy_net_config = embassy_net::Config::dhcpv4(Default::default());
+    let embassy_net_seed = (rng.random() as u64) << 32 | rng.random() as u64;
+    embassy_net::new(
+        station,
+        embassy_net_config,
+        stack_resources,
+        embassy_net_seed,
+    )
 }
