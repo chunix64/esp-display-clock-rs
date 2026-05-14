@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  check-desktop:
+    name: Check / Clippy / Fmt - desktop & ui
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust for Xtensa
+        uses: esp-rs/xtensa-toolchain@v1.7.0
+        with:
+          default: true
+          ldproxy: true
+
+      - name: cargo fmt
+        run: |
+          cargo fmt -p embeddeck-ui     --check
+          cargo fmt -p embeddeck-desktop --check
+
+      - name: cargo check
+        run: |
+          cargo check -p embeddeck-ui
+          cargo check -p embeddeck-desktop
+
+      - name: cargo clippy
+        run: |
+          cargo clippy -p embeddeck-ui      -- -D warnings
+          cargo clippy -p embeddeck-desktop -- -D warnings
+
+  check-embedded:
+    name: Check / Clippy / Fmt — embedded
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust for Xtensa
+        uses: esp-rs/xtensa-toolchain@v1.7.0
+        with:
+          default: true
+          ldproxy: true
+
+      - name: cargo fmt
+        working-directory: crates/embeddeck-embedded
+        run: cargo fmt --check
+
+      - name: cargo check
+        working-directory: crates/embeddeck-embedded
+        run: |
+          echo $PWD
+          cargo check
+
+      - name: cargo clippy
+        working-directory: crates/embeddeck-embedded
+        run: |
+          cargo clippy -- -D warnings
