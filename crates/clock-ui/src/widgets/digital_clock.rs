@@ -1,21 +1,20 @@
 use alloc::{format, vec};
-
 use ratatui::{buffer::Buffer, layout::Rect, style::Style, text::Line, widgets::Widget};
 use tui_big_text::BigText;
 
-use crate::models::clock::Clock;
+use crate::models::clock::{Clock, ClockSource};
 
-pub struct DigitalClockWidget<'a> {
-    clock: &'a Clock,
+pub struct DigitalClockWidget<'a, S: ClockSource> {
+    clock: &'a Clock<S>,
 }
 
-impl<'a> DigitalClockWidget<'a> {
-    pub fn new(clock: &'a Clock) -> Self {
+impl<'a, S: ClockSource> DigitalClockWidget<'a, S> {
+    pub fn new(clock: &'a Clock<S>) -> Self {
         Self { clock }
     }
 }
 
-impl Widget for DigitalClockWidget<'_> {
+impl<S: ClockSource> Widget for DigitalClockWidget<'_, S> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let clock_text = Line::from(format!(
             "{:02}:{:02}:{:02}",

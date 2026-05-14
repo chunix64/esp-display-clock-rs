@@ -1,0 +1,12 @@
+[package]
+name = "clock-ui"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+heapless     = { workspace = true }
+chrono       = { workspace = true }
+chrono-tz    = { workspace = true }
+ratatui      = { workspace = true }
+tui-big-text = { workspace = true }
+log          = { workspace = true }

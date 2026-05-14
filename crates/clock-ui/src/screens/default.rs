@@ -6,19 +6,22 @@ use ratatui::{
     widgets::{Block, Widget},
 };
 
-use crate::{models::clock::Clock, ui::widgets::digital_clock::DigitalClockWidget};
+use crate::{
+    models::clock::{Clock, ClockSource},
+    widgets::digital_clock::DigitalClockWidget,
+};
 
-pub struct DefaultScreen<'a> {
-    clock: &'a Clock,
+pub struct DefaultScreen<'a, S: ClockSource> {
+    clock: &'a Clock<S>,
 }
 
-impl<'a> DefaultScreen<'a> {
-    pub fn new(clock: &'a Clock) -> Self {
+impl<'a, S: ClockSource> DefaultScreen<'a, S> {
+    pub fn new(clock: &'a Clock<S>) -> Self {
         Self { clock }
     }
 }
 
-impl Widget for DefaultScreen<'_> {
+impl<S: ClockSource> Widget for DefaultScreen<'_, S> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Line::from("ESP Clock".bold());
 

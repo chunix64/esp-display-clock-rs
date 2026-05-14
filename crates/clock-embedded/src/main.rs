@@ -15,11 +15,11 @@ extern crate alloc;
 
 // -------------
 
+mod actors;
 mod app;
 mod hardware;
 mod models;
 mod services;
-mod ui;
 
 use embassy_executor::Spawner;
 use embassy_time::Delay;
@@ -34,7 +34,7 @@ use crate::hardware::board::Board;
 use crate::hardware::display::display_controller::DisplayController;
 use crate::hardware::display::spi_display::SpiDisplayBuilder;
 use crate::hardware::radio::wifi::{init_network_stack, wifi_task};
-use crate::models::clock::Clock;
+use crate::models::clock::{EmbeddedClock, EmbeddedClockExt};
 use crate::models::configs::WifiConfig;
 use crate::services::embassy_net::{net_monitor_task, net_runner_task};
 use crate::services::ntp::ntp_task;
@@ -42,7 +42,7 @@ use crate::services::webserver::webserver_task;
 
 static WIFI_CONTROLLER: StaticCell<WifiController<'static>> = StaticCell::new();
 static RTC: StaticCell<Rtc<'static>> = StaticCell::new();
-static CLOCK: StaticCell<Clock> = StaticCell::new();
+static CLOCK: StaticCell<EmbeddedClock> = StaticCell::new();
 
 const DISPLAY_BUFFER_SIZE: usize = 2048;
 static DISPLAY_BUFFER: StaticCell<[u8; DISPLAY_BUFFER_SIZE]> = StaticCell::new();
@@ -59,7 +59,7 @@ async fn main(spawner: Spawner) -> ! {
     // --- Board & RTC ---
     let board = Board::init();
     let rtc: &'static Rtc<'static> = RTC.init(Rtc::new(board.app_peripherals.lpwr));
-    let clock: &'static Clock = CLOCK.init(Clock::default(rtc));
+    let clock: &'static EmbeddedClock = CLOCK.init(EmbeddedClock::default(rtc));
 
     // --- WiFi & Network ---
     let (wifi_controller_inner, wifi_interfaces) =

@@ -1,47 +1,12 @@
-[package]
-edition      = "2024"
-name         = "esp-display-clock-rs"
-default-run  = "esp-display-clock-rs"
-rust-version = "1.91"
-version      = "0.1.0"
-
-[[bin]]
-name = "esp-display-clock-rs"
-path = "./src/main.rs"
-required-features = ["embedded"]
-
-[[bin]]
-name = "esp-display-clock-rs-desktop"
-path = "./src/main_desktop.rs"
-required-features = ["desktop"]
-
-[features]
-default  = ["embedded"]
-desktop  = ["ratatui/crossterm", "chrono/std", "chrono/clock", "dep:crossterm"]
-embedded = [
-    "dep:esp-hal",
-    "dep:esp-bootloader-esp-idf",
-    "dep:esp-alloc",
-    "dep:esp-rtos",
-    "dep:esp-radio",
-    "dep:embedded-hal",
-    "dep:embedded-hal-async",
-    "dep:embedded-hal-bus",
-    "dep:embedded-graphics",
-    "dep:embassy-executor",
-    "dep:embassy-time",
-    "dep:embassy-net",
-    "dep:static_cell",
-    "dep:sntpc",
-    "dep:sntpc-net-embassy",
-    "dep:mipidsi",
-    "dep:mousefood",
-    "dep:esp-println",
+[workspace]
+members = [
+    "crates/clock-ui",
+    "crates/clock-embedded",
+    "crates/clock-desktop",
 ]
-crossterm = ["dep:crossterm"]
+resolver = "2"
 
-
-[dependencies]
+[workspace.dependencies]
 # --- Shared (both targets) ---
 heapless = "0.9.3"
 chrono = { version = "0.4.44", default-features = false }
@@ -50,35 +15,6 @@ ratatui = { version = "0.30.0", default-features = false }
 tui-big-text = "0.8.4"
 nanofish = "0.11.3"
 log = "0.4.29"
-
-# --- Desktop only ---
-crossterm               = { version = "0.29.0", optional = true }
-
-# --- Embedded only ---
-esp-hal                 = { version = "~1.1.1", optional = true, features = ["esp32", "unstable"] }
-esp-bootloader-esp-idf  = { version = "0.5.0",  optional = true,features = ["esp32"] }
-esp-alloc               = { version = "0.10.0", optional = true,features = ["esp32"] }
-esp-rtos                = { version = "0.3.0",  optional = true,features = ["esp32", "embassy", "esp-radio"] }
-esp-radio               = { version = "0.18.0", optional = true,default-features = false, features = ["esp32", "wifi", "esp-alloc", "unstable"] }
-
-embedded-hal            = { version = "1.0.0",  optional = true,}
-embedded-hal-async      = { version = "1.0.0",  optional = true, }
-embedded-hal-bus        = { version = "0.3.0",  optional = true, }
-embedded-graphics       = { version = "0.8.2",  optional = true, }
-
-embassy-executor        = { version = "0.10.0", optional = true, }
-embassy-time            = { version = "0.5.1",  optional = true, }
-embassy-net             = { version = "0.9.1",  optional = true, features = ["dhcpv4", "dns", "udp"] }
-
-static_cell             = { version = "2.1.1",  optional = true }
-
-sntpc                   = { version = "0.9.0",  optional = true, default-features = false }
-sntpc-net-embassy       = { version = "0.9.0",  optional = true, features = ["ipv6"] }
-
-mipidsi                 = { version= "0.10.0",  optional = true, }
-mousefood               = { version = "0.5.0",  optional = true, default-features = false, features = ["fonts"] }
-
-esp-println             = { version = "0.17.0", optional = true, features = ["esp32", "log-04"] }
 
 # For fine tuning these settings, please refer to https://doc.rust-lang.org/cargo/reference/profiles.html
 [profile.dev]
