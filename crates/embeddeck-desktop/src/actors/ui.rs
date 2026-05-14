@@ -1,5 +1,5 @@
-use clock_ui::screens::default::DefaultScreen;
 use crossterm::event::{self, Event};
+use embeddeck_ui::screens::default::DefaultScreen;
 use ratatui::DefaultTerminal;
 use ratatui::Frame;
 use std::time::Duration;

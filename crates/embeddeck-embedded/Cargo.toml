@@ -1,11 +1,11 @@
 [package]
-name        = "clock-embedded"
+name        = "embeddeck-embedded"
 edition     = "2024"
 version     = "0.1.0"
 rust-version = "1.91"
 
 [[bin]]
-name = "clock-embedded"
+name = "embeddeck-embedded"
 path = "src/main.rs"
 
 [features]
@@ -21,7 +21,7 @@ nanofish     = { workspace = true }
 log          = { workspace = true }
 
 # --- UI lib ---
-clock-ui = { path = "../clock-ui" }
+embeddeck-ui = { path = "../embeddeck-ui" }
 
 # --- Embedded only ---
 esp-hal                 = { version = "~1.1.1", features = ["esp32", "unstable"] }

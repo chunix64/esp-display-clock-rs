@@ -1,8 +1,12 @@
 [workspace]
 members = [
-    "crates/clock-ui",
-    "crates/clock-embedded",
-    "crates/clock-desktop",
+    "crates/embeddeck-ui",
+    "crates/embeddeck-embedded",
+    "crates/embeddeck-desktop",
+]
+default-members = [
+    "crates/embeddeck-ui",
+    "crates/embeddeck-desktop",
 ]
 resolver = "2"
 

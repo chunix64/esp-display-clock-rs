@@ -1,21 +1,23 @@
-**ESP Display Clock** (`esp-display-clock-rs`)
+# embeddeck-rs
 
-A clean, modern embedded Rust clock based on `Ratatui` for ESP32 using the ESP-HAL ecosystem, Embassy, and a color SPI display.
+A modular, general-purpose embedded display runtime for ESP32, written in Rust. Built on the ESP-HAL ecosystem and Embassy, `embeddeck` turns a microcontroller + screen into a multi-app smart panel — think weather, AI, media info, reading, and more — all running on hardware that fits in your hand.
 
 <img width="1280" height="960" alt="photo_2026-05-14_09-29-52" src="https://github.com/user-attachments/assets/f49d334e-44d5-4c9e-965e-0d795910060a" />
 
-
 ## Features
 
-- Real-time clock with hardware RTC
-- NTP time synchronization over WiFi
-- Good TUI using `mipidsi` + `embedded-graphics` + `ratatui` (ongoing)
-- Adjustable backlight with smooth PWM control
-- Multiple target support:
-  - Embedded (ESP32)
-  - Desktop (ongoing)
-  - More (ongoing)
-- Clean architecture with separation of concerns (hardware, models, UI, services)
+- **Multi-app, multi-screen** — switch between apps/screens at runtime
+- **Weather** — live conditions and forecast display (planned)
+- **AI integration** — on-device or networked inference display (planned)
+- **Reading** — render text content, feeds, or documents (planned)
+- **Sound & music** — playback info, visualizers (planned)
+- **PC sync** — mirror or relay data from a connected desktop (planned)
+- **NTP time sync** over WiFi
+- **Adjustable backlight** with smooth PWM control
+- **Multiple display driver support** — not locked to ST7789, built on `mipidsi`
+- **TUI rendering** via `embedded-graphics` + `ratatui`
+- **Desktop simulator** — iterate on UI without hardware
+- **Multi-crate workspace** with clean separation of concerns
 - Built with async/await using Embassy
 
 ## Hardware
@@ -25,34 +27,65 @@ Tested with:
 - 240×320 ST7789 SPI IPS display
 - Backlight connected to a PWM-capable GPIO
 
-Default pinout (defined in `src/hardware/board.rs`):
+Default pinout (defined in `crates/embeddeck-embedded/src/hardware/board.rs`):
 
-| Function     | GPIO |
-|--------------|------|
-| SPI SCK      | 18   |
-| SPI MOSI     | 23   |
-| Display DC   | 2    |
-| Display CS   | 5    |
-| Display RST  | 4    |
-| Backlight    | 14   |
+| Function    | GPIO |
+|-------------|------|
+| SPI SCK     | 18   |
+| SPI MOSI    | 23   |
+| Display DC  | 2    |
+| Display CS  | 5    |
+| Display RST | 4    |
+| Backlight   | 14   |
 
-You can easily change pins by editing the board configuration.
+Pins can be changed by editing the board configuration. Other display drivers supported by `mipidsi` (ILI9341, ILI9486, SSD1351, etc.) can be wired in with minimal changes.
 
 ## Prerequisites
+
 - `rustc`: 1.91+
+- Xtensa toolchain for embedded targets: install via [`espup`](https://github.com/esp-rs/espup)
+
+## Project Structure
+
+Cargo workspace split into three crates:
+
+```
+crates/
+├── embeddeck-ui/          # Shared UI library (target-agnostic)
+│   └── src/
+│       ├── models/        # Shared data models
+│       ├── screens/       # Screen definitions
+│       └── widgets/       # Ratatui widgets
+│
+├── embeddeck-embedded/    # ESP32 embedded target
+│   └── src/
+│       ├── hardware/      # Board, display (SPI), backlight (LEDC), WiFi
+│       ├── models/        # Embedded-specific models and configs
+│       ├── services/      # NTP, web server, embassy-net
+│       ├── actors/        # Async actor tasks
+│       └── main.rs
+│
+└── embeddeck-desktop/     # Desktop simulator target
+    └── src/
+        ├── actors/        # Desktop actor tasks
+        ├── models/        # Desktop-specific models
+        └── main.rs
+```
+
+`embeddeck-ui` is shared between both targets, keeping all UI logic hardware-agnostic.
 
 ## Quick Start
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
-git clone https://github.com/chunix64/esp-display-clock-rs.git
-cd esp-display-clock-rs
+git clone https://github.com/chunix64/embeddeck-rs.git
+cd embeddeck-rs
 ```
 
 ### 2. Configure WiFi
 
-Edit `src/main.rs`:
+Edit `crates/embeddeck-embedded/src/models/configs.rs`:
 
 ```rust
 let wifi_config = WifiConfig {
@@ -64,60 +97,45 @@ let wifi_config = WifiConfig {
 ### 3. Build & Flash
 
 ```bash
-# Build and flash
+cd crates/embeddeck-embedded
 cargo run --release
-
-# Or build
-cargo build --release
 ```
 
-The output binary located at:
-
+Output binary:
 ```
-target/xtensa-esp32-none-elf/release/esp-display-clock-rs
+crates/embeddeck-embedded/target/xtensa-esp32-none-elf/release/embeddeck-embedded
 ```
 
-## Desktop Development
+### Desktop Simulator
 
-Great for iterating on the UI quickly:
+Develop and iterate on UI without any hardware:
 
 ```bash
-cargo run-desktop
+cd crates/embeddeck-desktop
+cargo run --release
 ```
 
-This runs the same UI code in a terminal using `ratatui`. (ongoing)
+## Roadmap
 
-## Project Structure
-
-```
-src/
-├── hardware/          # Board, display, backlight, peripherals, WiFi
-├── models/            # Clock, configs
-├── services/          # NTP, software services
-├── ui/                # Ratatui UI
-├── main.rs            # Entry point for esp32/embedded
-├── main_desktop.rs    # Entry point for desktop version
-└── lib.rs
-```
-
-## Roadmap / TODOs
-
-- Multiple UI layout, themes
-- Weather integration
-- Configuration via web interface or BLE
-- Deep sleep / low power modes
-- Touch support
-- More screens support
-- Sync between desktop version and embedded version
-- Improve the RTC clock accuracy (currently 5000+ ppm drift)
+- [ ] Weather integration
+- [ ] AI display (local or networked)
+- [ ] Reading / RSS / document rendering
+- [ ] Sound & music info display
+- [ ] PC sync (desktop ↔ device)
+- [ ] Multiple UI layouts and themes
+- [ ] Configuration via web interface or BLE
+- [ ] Deep sleep / low power modes
+- [ ] Touch support
+- [ ] Broader display driver support (ILI9341, SSD1351, etc.)
+- [ ] Sync between desktop simulator and embedded target
 
 ## Contributing
 
-Contributions are welcome! Feel free to open issues or PRs.
+Contributions are welcome — open an issue or PR.
 
 ## License
 
-This project is licensed under the MIT License.
+MIT License.
 
 ## Acknowledgments
 

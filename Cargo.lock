@@ -156,61 +156,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "clock-desktop"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "chrono-tz",
- "clock-ui",
- "crossterm",
- "log",
- "ratatui",
-]
-
-[[package]]
-name = "clock-embedded"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "chrono-tz",
- "clock-ui",
- "embassy-executor",
- "embassy-net",
- "embassy-time",
- "embedded-graphics",
- "embedded-hal 1.0.0",
- "embedded-hal-async",
- "embedded-hal-bus",
- "esp-alloc",
- "esp-bootloader-esp-idf",
- "esp-hal",
- "esp-println",
- "esp-radio",
- "esp-rtos",
- "heapless 0.9.3",
- "log",
- "mipidsi",
- "mousefood",
- "nanofish",
- "ratatui",
- "sntpc",
- "sntpc-net-embassy",
- "static_cell",
-]
-
-[[package]]
-name = "clock-ui"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "chrono-tz",
- "heapless 0.9.3",
- "log",
- "ratatui",
- "tui-big-text",
-]
-
-[[package]]
 name = "compact_str"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -689,6 +634,61 @@ checksum = "168297bf80aaf114b3c9ad589bf38b01b3009b9af7f97cd18086c5bbf96f5693"
 dependencies = [
  "embassy-executor-timer-queue",
  "heapless 0.9.3",
+]
+
+[[package]]
+name = "embeddeck-desktop"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "crossterm",
+ "embeddeck-ui",
+ "log",
+ "ratatui",
+]
+
+[[package]]
+name = "embeddeck-embedded"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "embassy-executor",
+ "embassy-net",
+ "embassy-time",
+ "embeddeck-ui",
+ "embedded-graphics",
+ "embedded-hal 1.0.0",
+ "embedded-hal-async",
+ "embedded-hal-bus",
+ "esp-alloc",
+ "esp-bootloader-esp-idf",
+ "esp-hal",
+ "esp-println",
+ "esp-radio",
+ "esp-rtos",
+ "heapless 0.9.3",
+ "log",
+ "mipidsi",
+ "mousefood",
+ "nanofish",
+ "ratatui",
+ "sntpc",
+ "sntpc-net-embassy",
+ "static_cell",
+]
+
+[[package]]
+name = "embeddeck-ui"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "heapless 0.9.3",
+ "log",
+ "ratatui",
+ "tui-big-text",
 ]
 
 [[package]]

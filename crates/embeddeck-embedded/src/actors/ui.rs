@@ -1,5 +1,5 @@
-use clock_ui::screens::default::DefaultScreen;
 use embassy_time::Delay;
+use embeddeck_ui::screens::default::DefaultScreen;
 use embedded_hal_async::delay::DelayNs;
 use mousefood::{EmbeddedBackend, EmbeddedBackendConfig};
 use ratatui::{Frame, Terminal};

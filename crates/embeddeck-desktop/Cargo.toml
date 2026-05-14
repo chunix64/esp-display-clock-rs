@@ -1,10 +1,10 @@
 [package]
-name    = "clock-desktop"
+name    = "embeddeck-desktop"
 version = "0.1.0"
 edition = "2024"
 
 [[bin]]
-name = "clock-desktop"
+name = "embeddeck-desktop"
 path = "src/main.rs"
 
 [dependencies]
@@ -13,6 +13,6 @@ chrono-tz    = { workspace = true }
 ratatui      = { workspace = true, features = ["crossterm"] }
 log          = { workspace = true }
 
-clock-ui     = { path = "../clock-ui" }
+embeddeck-ui = { path = "../embeddeck-ui" }
 
 crossterm    = "0.29.0"
