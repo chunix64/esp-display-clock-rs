@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 #![deny(clippy::mem_forget)]
+
+// TODO: Reduce the stack size
 // #![deny(clippy::large_stack_frames)]
 
 #[panic_handler]
@@ -33,14 +35,14 @@ use crate::hardware::backlight::ledc::Backlight;
 use crate::hardware::board::Board;
 use crate::hardware::display::display_controller::DisplayController;
 use crate::hardware::display::spi_display::SpiDisplayBuilder;
-use crate::hardware::radio::wifi::{init_network_stack, wifi_task};
+use crate::hardware::radio::wifi::wifi_task;
 use crate::models::clock::{EmbeddedClock, EmbeddedClockExt};
 use crate::models::configs::WifiConfig;
-use crate::services::debug::debug_task;
-use crate::services::embassy_net::{net_monitor_task, net_runner_task};
-use crate::services::ntp::ntp_task;
-use crate::services::weather::weather_task;
-use crate::services::webserver::webserver_task;
+use crate::services::debug::debug_service;
+use crate::services::network::{init_network_stack, net_monitor_service, net_runner_service};
+use crate::services::ntp::ntp_service;
+use crate::services::weather::weather_service;
+use crate::services::webserver::webserver_service;
 
 static WIFI_CONTROLLER: StaticCell<WifiController<'static>> = StaticCell::new();
 static RTC: StaticCell<Rtc<'static>> = StaticCell::new();
@@ -92,14 +94,18 @@ async fn main(spawner: Spawner) -> ! {
         password: heapless::String::try_from("YOUR_SSID_PASSWORD").unwrap(),
     };
 
-    // --- Spawn Tasks ---
+    // --- Spawn hardware Tasks ---
     spawner.spawn(wifi_task(wifi_controller, wifi_config).unwrap());
-    spawner.spawn(net_runner_task(network_runner).unwrap());
-    spawner.spawn(net_monitor_task(network_stack).unwrap());
-    spawner.spawn(ntp_task(network_stack, rtc).unwrap());
-    spawner.spawn(webserver_task(network_stack).unwrap());
-    spawner.spawn(weather_task(network_stack).unwrap());
-    spawner.spawn(debug_task().unwrap());
+
+    // --- Spawn service Tasks ---
+    spawner.spawn(net_runner_service(network_runner).unwrap());
+    spawner.spawn(net_monitor_service(network_stack).unwrap());
+    spawner.spawn(ntp_service(network_stack, rtc).unwrap());
+    spawner.spawn(webserver_service(network_stack).unwrap());
+    spawner.spawn(weather_service(network_stack).unwrap());
+    spawner.spawn(debug_service().unwrap());
+
+    // --- Spawn main logic ---
     spawner.spawn(app_task(spawner, display_controller, clock).unwrap());
 
     loop {

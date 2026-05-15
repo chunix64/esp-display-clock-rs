@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[embassy_executor::task]
-pub async fn ui_task(display: &'static mut DisplayController, clock: &'static EmbeddedClock) {
+pub async fn ui_actor(display: &'static mut DisplayController, clock: &'static EmbeddedClock) {
     display.init();
     display.rotate_landscape();
 

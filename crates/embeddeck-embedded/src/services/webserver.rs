@@ -2,7 +2,7 @@ use heapless::Vec;
 use nanofish::{HttpHandler, HttpResponse, ResponseBody, SmallHttpServer, StatusCode};
 
 #[embassy_executor::task]
-pub async fn webserver_task(network_stack: embassy_net::Stack<'static>) {
+pub async fn webserver_service(network_stack: embassy_net::Stack<'static>) {
     let mut server = SmallHttpServer::new(80);
     let handler = WebServerHandler;
 

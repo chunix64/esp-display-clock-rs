@@ -3,7 +3,7 @@ use embedded_hal_async::delay::DelayNs;
 use log::debug;
 
 #[embassy_executor::task]
-pub async fn debug_task() {
+pub async fn debug_service() {
     loop {
         let free = esp_alloc::HEAP.free();
         let used = esp_alloc::HEAP.used();

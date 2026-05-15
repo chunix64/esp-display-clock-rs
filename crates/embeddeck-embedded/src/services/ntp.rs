@@ -41,11 +41,11 @@ impl NtpTimestampGenerator for NtpTimeStamp<'_> {
 }
 
 #[embassy_executor::task]
-pub async fn ntp_task(network_stack: embassy_net::Stack<'static>, rtc: &'static Rtc<'static>) {
+pub async fn ntp_service(network_stack: embassy_net::Stack<'static>, rtc: &'static Rtc<'static>) {
     // Retry if errors occur
     loop {
         if let Err(error) = ntp_handler(network_stack, rtc).await {
-            warn!("[NTP] Task failed: {:?}", error);
+            warn!("[NTP] Service failed, retry: {:?}", error);
         }
     }
 }

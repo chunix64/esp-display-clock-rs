@@ -2,7 +2,7 @@ use embassy_executor::Spawner;
 use embassy_time::Delay;
 use embedded_hal_async::delay::DelayNs;
 
-use crate::actors::ui::ui_task;
+use crate::actors::ui::ui_actor;
 use crate::hardware::display::display_controller::DisplayController;
 use crate::models::clock::EmbeddedClock;
 
@@ -12,7 +12,7 @@ pub async fn app_task(
     display: &'static mut DisplayController,
     clock: &'static EmbeddedClock,
 ) {
-    spawner.spawn(ui_task(display, clock).unwrap());
+    spawner.spawn(ui_actor(display, clock).unwrap());
 
     loop {
         Delay.delay_ms(1000).await;

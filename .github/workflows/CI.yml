@@ -64,3 +64,25 @@ jobs:
         working-directory: crates/embeddeck-embedded
         run: |
           cargo clippy -- -D warnings
+
+  check-webui:
+    name: Check Webui 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Install dependencies
+        working-directory: webui
+        run: npm ci
+
+      - name: Lint
+        working-directory: webui
+        run: npm run lint
+
+      - name: Type-check
+        working-directory: webui
+        run: npx tsc --noEmit
+
+      - name: Build
+        working-directory: webui
+        run: npm run build

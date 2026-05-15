@@ -5,13 +5,14 @@ use log::{info, warn};
 use nanofish::{HttpHeader, ResponseBody, SmallHttpClient, mime_types};
 use static_cell::StaticCell;
 
+// TODO: Implement
 const WEATHER_URL: &str =
     "http://api.open-meteo.com/v1/forecast?latitude=1.35&longitude=103.81&hourly=temperature_2m";
 
 static RESPONSE_BUFFER: StaticCell<[u8; 512]> = StaticCell::new();
 
 #[embassy_executor::task]
-pub async fn weather_task(network_stack: embassy_net::Stack<'static>) {
+pub async fn weather_service(network_stack: embassy_net::Stack<'static>) {
     network_stack.wait_config_up().await;
 
     let interval = 60000; // 1 minute
@@ -25,7 +26,7 @@ pub async fn weather_task(network_stack: embassy_net::Stack<'static>) {
 
     loop {
         if let Err(error) = fetch_weather(&client, &mut headers, response_buffer).await {
-            warn!("[WEATHER] Task failed: {:?}", error);
+            warn!("[WEATHER] Fetch weather API failed: {:?}", error);
         };
         Delay.delay_ms(interval).await;
     }
