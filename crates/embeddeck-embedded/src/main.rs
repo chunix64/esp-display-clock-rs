@@ -36,15 +36,17 @@ use crate::hardware::display::spi_display::SpiDisplayBuilder;
 use crate::hardware::radio::wifi::{init_network_stack, wifi_task};
 use crate::models::clock::{EmbeddedClock, EmbeddedClockExt};
 use crate::models::configs::WifiConfig;
+use crate::services::debug::debug_task;
 use crate::services::embassy_net::{net_monitor_task, net_runner_task};
 use crate::services::ntp::ntp_task;
+use crate::services::weather::weather_task;
 use crate::services::webserver::webserver_task;
 
 static WIFI_CONTROLLER: StaticCell<WifiController<'static>> = StaticCell::new();
 static RTC: StaticCell<Rtc<'static>> = StaticCell::new();
 static CLOCK: StaticCell<EmbeddedClock> = StaticCell::new();
 
-const DISPLAY_BUFFER_SIZE: usize = 2048;
+const DISPLAY_BUFFER_SIZE: usize = 1024;
 static DISPLAY_BUFFER: StaticCell<[u8; DISPLAY_BUFFER_SIZE]> = StaticCell::new();
 static DISPLAY_CONTROLLER: StaticCell<DisplayController> = StaticCell::new();
 static BACKLIGHT: StaticCell<Backlight> = StaticCell::new();
@@ -96,6 +98,8 @@ async fn main(spawner: Spawner) -> ! {
     spawner.spawn(net_monitor_task(network_stack).unwrap());
     spawner.spawn(ntp_task(network_stack, rtc).unwrap());
     spawner.spawn(webserver_task(network_stack).unwrap());
+    spawner.spawn(weather_task(network_stack).unwrap());
+    spawner.spawn(debug_task().unwrap());
     spawner.spawn(app_task(spawner, display_controller, clock).unwrap());
 
     loop {

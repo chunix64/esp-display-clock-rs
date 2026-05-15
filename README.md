@@ -1,24 +1,26 @@
 # embeddeck-rs
 
-A modular, general-purpose embedded display runtime for ESP32, written in Rust. Built on the ESP-HAL ecosystem and Embassy, `embeddeck` turns a microcontroller + screen into a multi-app smart panel — think weather, AI, media info, reading, and more — all running on hardware that fits in your hand.
+A modular, general-purpose embedded display runtime for ESP32, written in Rust. Built on the ESP-HAL ecosystem and Embassy, `embeddeck` turns a microcontroller + screen into a multi-app smart panel - think weather, AI, media info, reading, and more - all running on hardware that fits in your hand.
 
 <img width="1280" height="960" alt="photo_2026-05-14_09-29-52" src="https://github.com/user-attachments/assets/f49d334e-44d5-4c9e-965e-0d795910060a" />
 
 ## Features
 
-- **Multi-app, multi-screen** — switch between apps/screens at runtime
-- **Weather** — live conditions and forecast display (planned)
-- **AI integration** — on-device or networked inference display (planned)
-- **Reading** — render text content, feeds, or documents (planned)
-- **Sound & music** — playback info, visualizers (planned)
-- **PC sync** — mirror or relay data from a connected desktop (planned)
 - **NTP time sync** over WiFi
 - **Adjustable backlight** with smooth PWM control
-- **Multiple display driver support** — not locked to ST7789, built on `mipidsi`
+- **Multiple display driver support** - not locked to ST7789, built on `mipidsi`
 - **TUI rendering** via `embedded-graphics` + `ratatui`
-- **Desktop simulator** — iterate on UI without hardware
-- **Multi-crate workspace** with clean separation of concerns
 - Built with async/await using Embassy
+
+- Webui (Planed)
+- **Weather** - live conditions and forecast display (planned)
+- **Reading** - render text content, feeds, or documents (planned)
+- **Multi-app, multi-screen** - switch between apps/screens at runtime (planed)
+- **AI integration** - on-device or networked inference display (planned)
+- **Sound & music** - playback info, visualizers (planned)
+- **PC sync** - mirror or relay data from a connected desktop (planned)
+- **Desktop simulator** - iterate on UI without hardware (planed)
+- **Multi-crate workspace** with clean separation of concerns (planed)
 
 ## Hardware
 
@@ -131,7 +133,7 @@ cargo run --release
 
 ## Contributing
 
-Contributions are welcome — open an issue or PR.
+Contributions are welcome - open an issue or PR.
 
 ## License
 

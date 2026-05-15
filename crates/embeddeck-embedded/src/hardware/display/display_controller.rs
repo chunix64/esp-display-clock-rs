@@ -26,8 +26,8 @@ impl DisplayController {
         &mut self.display
     }
 
-    pub fn clear(&mut self) {
-        self.display.clear(Rgb565::BLACK).unwrap();
+    pub fn clear(&mut self) -> bool {
+        self.display.clear(Rgb565::BLACK).is_ok()
     }
 
     pub fn set_brightness(&mut self, brightness: u8) {

@@ -10,6 +10,9 @@
 # Ignore nested ones if accidental
 crates/**/Cargo.lock
 
+# Webui
+webui/node_modules
+
 # IDE / Editors
 .vscode/
 .idea/

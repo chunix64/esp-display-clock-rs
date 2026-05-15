@@ -1,5 +1,6 @@
 use core::net::{IpAddr, SocketAddr};
 
+use anyhow::Result;
 use embassy_net::udp::{PacketMetadata, UdpSocket};
 use embassy_time::Delay;
 use embedded_hal_async::delay::DelayNs;
@@ -41,24 +42,35 @@ impl NtpTimestampGenerator for NtpTimeStamp<'_> {
 
 #[embassy_executor::task]
 pub async fn ntp_task(network_stack: embassy_net::Stack<'static>, rtc: &'static Rtc<'static>) {
+    // Retry if errors occur
+    loop {
+        if let Err(error) = ntp_handler(network_stack, rtc).await {
+            warn!("[NTP] Task failed: {:?}", error);
+        }
+    }
+}
+
+async fn ntp_handler(
+    network_stack: embassy_net::Stack<'static>,
+    rtc: &'static Rtc<'static>,
+) -> Result<()> {
     network_stack.wait_config_up().await;
 
-    let interval = 3_600_000; // one hour
+    let interval = 1024 * 1000; // 1024 seconds = 17 minutes
 
     let ntp_addresses = network_stack
         .dns_query(NTP_SERVER, embassy_net::dns::DnsQueryType::A)
         .await
-        .unwrap();
+        .map_err(|e| anyhow::anyhow!("[NTP] DNS query failed: {:?}", e))?;
 
     if ntp_addresses.is_empty() {
-        warn!("[NTP] Can not get the ntp address!");
-        return;
+        return Err(anyhow::anyhow!("[NTP] Can not get the ntp address!"));
     }
 
     let mut rx_meta = [PacketMetadata::EMPTY; 16];
-    let mut rx_buffer = [0; 4096];
+    let mut rx_buffer = [0; 256];
     let mut tx_meta = [PacketMetadata::EMPTY; 16];
-    let mut tx_buffer = [0; 4096];
+    let mut tx_buffer = [0; 256];
 
     let mut socket = UdpSocket::new(
         network_stack,
@@ -68,7 +80,11 @@ pub async fn ntp_task(network_stack: embassy_net::Stack<'static>, rtc: &'static 
         &mut tx_buffer,
     );
 
-    socket.bind(123).unwrap();
+    let ntp_port = 123;
+
+    socket
+        .bind(ntp_port)
+        .map_err(|e| anyhow::anyhow!("[NTP] Socket binding failed: {:?}", e))?;
 
     let socket = UdpSocketWrapper::new(socket);
 
@@ -77,7 +93,7 @@ pub async fn ntp_task(network_stack: embassy_net::Stack<'static>, rtc: &'static 
             embassy_net::IpAddress::Ipv4(address) => IpAddr::V4(address),
             embassy_net::IpAddress::Ipv6(address) => IpAddr::V6(address),
         },
-        123,
+        ntp_port,
     );
 
     loop {

@@ -22,8 +22,9 @@ impl EmbeddedClockExt for EmbeddedClock {
     fn default(rtc: &'static Rtc<'static>) -> EmbeddedClock {
         let default_us = chrono_tz::UTC
             .with_ymd_and_hms(2026, 5, 10, 12, 0, 0)
-            .unwrap()
-            .timestamp_micros() as u64;
+            .single()
+            .map(|date_time| date_time.timestamp_micros() as u64)
+            .unwrap_or(0u64);
         rtc.set_current_time_us(default_us);
 
         EmbeddedClock::new(chrono_tz::UTC, RtcSource { rtc })

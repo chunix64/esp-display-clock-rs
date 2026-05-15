@@ -13,6 +13,7 @@ resolver = "2"
 [workspace.dependencies]
 # --- Shared (both targets) ---
 heapless = "0.9.3"
+anyhow = { version = "1.0.102", default-features = false }
 chrono = { version = "0.4.44", default-features = false }
 chrono-tz = { version = "0.10.4", default-features = false }
 ratatui = { version = "0.30.0", default-features = false }
