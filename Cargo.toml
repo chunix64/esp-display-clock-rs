@@ -1,17 +1,19 @@
 [workspace]
 members = [
+    "crates/embeddeck-core",
     "crates/embeddeck-ui",
     "crates/embeddeck-embedded",
     "crates/embeddeck-desktop",
 ]
 default-members = [
+    "crates/embeddeck-core",
     "crates/embeddeck-ui",
     "crates/embeddeck-desktop",
 ]
 resolver = "2"
 
 [workspace.dependencies]
-# --- Shared (both targets) ---
+# --- Shared libraries ---
 heapless = "0.9.3"
 anyhow = { version = "1.0.102", default-features = false }
 chrono = { version = "0.4.44", default-features = false }

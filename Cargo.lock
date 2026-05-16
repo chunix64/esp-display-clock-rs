@@ -643,12 +643,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "embeddeck-core"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "heapless 0.9.3",
+ "log",
+]
+
+[[package]]
 name = "embeddeck-desktop"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "chrono-tz",
  "crossterm",
+ "embeddeck-core",
  "embeddeck-ui",
  "log",
  "ratatui",
@@ -664,6 +675,7 @@ dependencies = [
  "embassy-executor",
  "embassy-net",
  "embassy-time",
+ "embeddeck-core",
  "embeddeck-ui",
  "embedded-graphics",
  "embedded-hal 1.0.0",
@@ -692,6 +704,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "chrono-tz",
+ "embeddeck-core",
  "heapless 0.9.3",
  "log",
  "ratatui",

@@ -1,8 +1,7 @@
 use alloc::{format, vec};
+use embeddeck_core::models::clock::{Clock, ClockSource};
 use ratatui::{buffer::Buffer, layout::Rect, style::Style, text::Line, widgets::Widget};
 use tui_big_text::BigText;
-
-use crate::models::clock::{Clock, ClockSource};
 
 pub struct DigitalClockWidget<'a, S: ClockSource> {
     clock: &'a Clock<S>,

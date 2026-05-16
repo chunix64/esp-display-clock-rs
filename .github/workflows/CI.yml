@@ -12,7 +12,7 @@ env:
 
 jobs:
   check-desktop:
-    name: Check / Clippy / Fmt - desktop & ui
+    name: Check/Clippy/Fmt - core & ui & desktop
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,21 +25,24 @@ jobs:
 
       - name: cargo fmt
         run: |
-          cargo fmt -p embeddeck-ui     --check
+          cargo fmt -p embeddeck-core    --check
+          cargo fmt -p embeddeck-ui      --check
           cargo fmt -p embeddeck-desktop --check
 
       - name: cargo check
         run: |
+          cargo check -p embeddeck-core
           cargo check -p embeddeck-ui
           cargo check -p embeddeck-desktop
 
       - name: cargo clippy
         run: |
+          cargo clippy -p embeddeck-core    -- -D warnings          
           cargo clippy -p embeddeck-ui      -- -D warnings
           cargo clippy -p embeddeck-desktop -- -D warnings
 
   check-embedded:
-    name: Check / Clippy / Fmt - embedded
+    name: Check/Clippy/Fmt - embedded
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +60,6 @@ jobs:
       - name: cargo check
         working-directory: crates/embeddeck-embedded
         run: |
-          echo $PWD
           cargo check
 
       - name: cargo clippy

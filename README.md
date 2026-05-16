@@ -55,9 +55,13 @@ Cargo workspace split into three crates:
 
 ```
 crates/
-├── embeddeck-ui/          # Shared UI library (target-agnostic)
+├── embeddeck-core/        # Shared models, functions, etc
 │   └── src/
-│       ├── models/        # Shared data models
+│       └── models/        # Shared models
+│
+├── embeddeck-ui/          # Shared UI library
+│   └── src/
+│       ├── models/        # UI-specific models
 │       ├── screens/       # Screen definitions
 │       └── widgets/       # Ratatui widgets
 │
@@ -76,9 +80,7 @@ crates/
         └── main.rs
 ```
 
-`embeddeck-ui` is shared between both targets, keeping all UI logic hardware-agnostic.
-
-`embeddeck-core` is planned to store shared models.
+`embeddeck-ui` and `embeddeck-core` are shared between both targets.
 
 ## Quick Start
 

@@ -1,4 +1,4 @@
-use embeddeck_ui::models::clock::{Clock, ClockSource};
+use embeddeck_core::models::clock::{Clock, ClockSource};
 
 pub struct SystemClock;
 

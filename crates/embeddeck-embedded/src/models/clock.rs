@@ -1,5 +1,5 @@
 use chrono::TimeZone;
-use embeddeck_ui::models::clock::{Clock, ClockSource};
+use embeddeck_core::models::clock::{Clock, ClockSource};
 use esp_hal::rtc_cntl::Rtc;
 
 pub struct RtcSource {

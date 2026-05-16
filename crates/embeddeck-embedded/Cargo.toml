@@ -21,7 +21,8 @@ ratatui      = { workspace = true }
 nanofish     = { workspace = true }
 log          = { workspace = true }
 
-# --- UI lib ---
+# --- embeddeck libs ---
+embeddeck-core = { path = "../embeddeck-core" }
 embeddeck-ui = { path = "../embeddeck-ui" }
 
 # --- Embedded only ---

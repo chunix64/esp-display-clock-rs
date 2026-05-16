@@ -1,5 +1,5 @@
 [package]
-name = "embeddeck-ui"
+name = "embeddeck-core"
 version = "0.1.0"
 edition = "2024"
 
@@ -7,9 +7,4 @@ edition = "2024"
 heapless     = { workspace = true }
 chrono       = { workspace = true }
 chrono-tz    = { workspace = true }
-ratatui      = { workspace = true }
-tui-big-text = { workspace = true }
 log          = { workspace = true }
-
-# --- embeddeck libs ---
-embeddeck-core = { path = "../embeddeck-core" }

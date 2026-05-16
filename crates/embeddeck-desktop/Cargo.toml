@@ -13,6 +13,8 @@ chrono-tz    = { workspace = true }
 ratatui      = { workspace = true, features = ["crossterm"] }
 log          = { workspace = true }
 
+# --- embeddeck libs ---
+embeddeck-core = { path = "../embeddeck-core" }
 embeddeck-ui = { path = "../embeddeck-ui" }
 
 crossterm    = "0.29.0"

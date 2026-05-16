@@ -1,3 +1,4 @@
+use embeddeck_core::models::clock::{Clock, ClockSource};
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Rect},
@@ -6,10 +7,7 @@ use ratatui::{
     widgets::{Block, Widget},
 };
 
-use crate::{
-    models::clock::{Clock, ClockSource},
-    widgets::digital_clock::DigitalClockWidget,
-};
+use crate::widgets::digital_clock::DigitalClockWidget;
 
 pub struct DefaultScreen<'a, S: ClockSource> {
     clock: &'a Clock<S>,
